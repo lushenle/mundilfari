@@ -2,8 +2,12 @@
 IMG ?= ishenle/simplebank:latest
 
 .PHONY: fmt
-fmt: ## Run go fmt against code
+fmt:
 	go fmt ./...
+
+.PHONY: vet
+vet:
+	go vet ./...
 
 .PHONY: postgres
 postgres:
@@ -34,7 +38,7 @@ test:
 	go test -v -cover ./...
 
 .PHONY: server
-server:
+server: fmt vet
 	go run main.go
 
 .PHONY: docker-build
