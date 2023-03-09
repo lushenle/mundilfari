@@ -1,7 +1,6 @@
 package db
 
 import (
-	"context"
 	"database/sql"
 	"testing"
 	"time"
@@ -14,8 +13,6 @@ const (
 	driverName     = "postgres"
 	dataSourceName = "postgresql://myuser:mypass@localhost:5432/simplebank?sslmode=disable"
 )
-
-var ctx = context.Background()
 
 func createRandomAccount(t *testing.T) Account {
 	arg := CreateAccountParams{

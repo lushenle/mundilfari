@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"database/sql"
 	"log"
 	"os"
@@ -10,6 +11,7 @@ import (
 )
 
 var testQueries *Queries
+var ctx = context.Background()
 
 func TestMain(m *testing.M) {
 	conn, err := sql.Open(driverName, dataSourceName)
