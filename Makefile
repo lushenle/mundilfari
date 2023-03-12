@@ -35,7 +35,7 @@ sqlc:
 
 .PHONY: test
 test:
-	go test -v -cover ./...
+	go test -v -count=1 -cover ./...
 
 .PHONY: server
 server: fmt vet
