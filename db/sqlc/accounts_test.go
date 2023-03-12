@@ -9,11 +9,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const (
-	driverName     = "postgres"
-	dataSourceName = "postgresql://myuser:mypass@localhost:5432/simplebank?sslmode=disable"
-)
-
 func createRandomAccount(t *testing.T) Account {
 	arg := CreateAccountParams{
 		Owner:    util.RandomOwner(),
