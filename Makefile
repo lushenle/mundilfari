@@ -41,6 +41,9 @@ test:
 server: fmt vet
 	go run main.go
 
+.PHONY: mock
+	mockgen -package mockdb -destination db/mock/store.go github.com/lushenle/simplebank/db/sqlc Store
+
 .PHONY: docker-build
 docker-build:
 	docker build -t ${IMG} .
