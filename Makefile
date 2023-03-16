@@ -29,6 +29,14 @@ migrateup:
 migratedown:
 	migrate -path db/migration -database "postgresql://myuser:mypass@localhost:5432/simplebank?sslmode=disable" -verbose down
 
+.PHONY: migrateup1
+migrateup1:
+	migrate -path db/migration -database "postgresql://myuser:mypass@localhost:5432/simplebank?sslmode=disable" -verbose up 1
+
+.PHONY: migratedown1
+migratedown1:
+	migrate -path db/migration -database "postgresql://myuser:mypass@localhost:5432/simplebank?sslmode=disable" -verbose down 1
+
 .PHONY: sqlc
 sqlc:
 	sqlc generate
