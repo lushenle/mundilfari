@@ -1,0 +1,25 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_PASSWORD=mypass
+      - POSTGRES_USER=myuser
+      - POSTGRES_DB=simplebank
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d simplebank -U myuser || exit 1"]
+      timeout: 3s
+      interval: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_SOURCE=postgresql://myuser:mypass@postgres:5432/simplebank?sslmode=disable
+    depends_on:
+      postgres:
+        condition: service_healthy
