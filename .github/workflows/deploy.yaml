@@ -30,7 +30,6 @@ jobs:
 
       - name: Build and push
         uses: docker/build-push-action@v4
-        env:
         with:
           push: true #${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64,linux/arm64
