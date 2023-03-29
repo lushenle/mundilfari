@@ -36,3 +36,14 @@ jobs:
           tags: |
             ishenle/simplebank:${{ steps.sha.outputs.sha_short }}
             ishenle/simplebank:latest
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Load secrets and save to app.env
+        run: |
+          aws secretsmanager get-secret-value --secret-id mundilfari --query SecretString --output text | jq -r 'to_entries|map("\(.key)=\(.value)")|.[]'
