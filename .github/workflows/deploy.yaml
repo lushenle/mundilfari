@@ -28,15 +28,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          push: true #${{ github.event_name != 'pull_request' }}
-          platforms: linux/amd64,linux/arm64
-          tags: |
-            ishenle/simplebank:${{ steps.sha.outputs.sha_short }}
-            ishenle/simplebank:latest
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -44,6 +35,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
       - name: Load secrets and save to app.env
         run: |
           aws secretsmanager get-secret-value --secret-id mundilfari --query SecretString --output text | jq -r 'to_entries|map("\(.key)=\(.value)")|.[]'
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true #${{ github.event_name != 'pull_request' }}
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            $ECR_REGISTRY/mundilfari:${{ steps.sha.outputs.sha_short }}
+            $ECR_REGISTRY/mundilfari:latest
