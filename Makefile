@@ -1,5 +1,5 @@
 # Image URL to use all building/pushing image targets
-IMG ?= ishenle/simplebank:latest
+IMG ?= ishenle/mundilfari:latest
 
 .PHONY: fmt
 fmt:
@@ -15,27 +15,27 @@ postgres:
 
 .PHONY: createdb
 createdb:
-	docker exec postgres12 createdb --username=myuser --owner=myuser simplebank
+	docker exec postgres12 createdb --username=myuser --owner=myuser mundilfari
 
 .PHONY: dropdb
 dropdb:
-	docker exec postgres12 dropdb -U myuser simplebank
+	docker exec postgres12 dropdb -U myuser mundilfari
 
 .PHONY: migrateup
 migrateup:
-	migrate -path db/migration -database "postgresql://myuser:mypass@localhost:5432/simplebank?sslmode=disable" -verbose up
+	migrate -path db/migration -database "postgresql://myuser:mypass@localhost:5432/mundilfari?sslmode=disable" -verbose up
 
 .PHONY: migratedown
 migratedown:
-	migrate -path db/migration -database "postgresql://myuser:mypass@localhost:5432/simplebank?sslmode=disable" -verbose down
+	migrate -path db/migration -database "postgresql://myuser:mypass@localhost:5432/mundilfari?sslmode=disable" -verbose down
 
 .PHONY: migrateup1
 migrateup1:
-	migrate -path db/migration -database "postgresql://myuser:mypass@localhost:5432/simplebank?sslmode=disable" -verbose up 1
+	migrate -path db/migration -database "postgresql://myuser:mypass@localhost:5432/mundilfari?sslmode=disable" -verbose up 1
 
 .PHONY: migratedown1
 migratedown1:
-	migrate -path db/migration -database "postgresql://myuser:mypass@localhost:5432/simplebank?sslmode=disable" -verbose down 1
+	migrate -path db/migration -database "postgresql://myuser:mypass@localhost:5432/mundilfari?sslmode=disable" -verbose down 1
 
 .PHONY: sqlc
 sqlc:
@@ -50,7 +50,7 @@ server: fmt vet
 	go run main.go
 
 .PHONY: mock
-	mockgen -package mockdb -destination db/mock/store.go github.com/lushenle/simplebank/db/sqlc Store
+	mockgen -package mockdb -destination db/mock/store.go github.com/lushenle/mundilfari/db/sqlc Store
 
 .PHONY: docker-build
 docker-build:

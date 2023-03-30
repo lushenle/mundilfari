@@ -1,4 +1,4 @@
-module github.com/lushenle/simplebank
+module github.com/lushenle/mundilfari
 
 go 1.20
 
