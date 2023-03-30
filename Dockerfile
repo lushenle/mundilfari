@@ -20,23 +20,23 @@ ENV CGO_ENABLED=0 \
 RUN go mod download
 
 # Build and compression
-RUN GOARCH=$(echo ${TARGETPLATFORM} | cut -d / -f2) go build -a -installsuffix cgo -ldflags="-s -w" -o bin/server main.go \
+ARG TARGETOS
+ARG TARGETARCH
+
+RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -a -installsuffix cgo -ldflags="-s -w" -o bin/server main.go \
     && upx bin/server
 
 # Add migrate tool
 #RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.2/migrate.linux-amd64.tar.gz | tar xvz
+RUN wget -q -O - https://github.com/golang-migrate/migrate/releases/download/v4.15.2/migrate.linux-${TARGETARCH}.tar.gz | tar xz
 
 # build server
 FROM alpine:3.17.2
 WORKDIR /
+
+COPY --from=builder /workspace/migrate .
+
 COPY --from=builder /workspace/bin/server .
-
-#COPY --from=builder /workspace/migrate .
-ARG TARGETPLATFORM
-# Add migrate tool
-RUN PLATFORM=$(echo ${TARGETPLATFORM} | cut -d / -f2) \
-    && wget -q -O - https://github.com/golang-migrate/migrate/releases/download/v4.15.2/migrate.linux-${PLATFORM}.tar.gz | tar xz
-
 COPY db/migration /migration
 COPY app.env .
 COPY start.sh .

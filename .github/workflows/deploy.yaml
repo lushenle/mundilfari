@@ -41,13 +41,15 @@ jobs:
 
       - name: Load secrets and save to app.env
         run: |
-          aws secretsmanager get-secret-value --secret-id mundilfari --query SecretString --output text | jq -r 'to_entries|map("\(.key)=\(.value)")|.[]'
+          aws secretsmanager get-secret-value --secret-id mundilfari --query SecretString --output text | jq -r 'to_entries|map("\(.key)=\(.value)")|.[]' > app.env
 
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          push: true #${{ github.event_name != 'pull_request' }}
+          context: .
+          file: ./Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64,linux/arm64
           tags: |
-            $ECR_REGISTRY/mundilfari:${{ steps.sha.outputs.sha_short }}
-            $ECR_REGISTRY/mundilfari:latest
+            ${{ steps.login-ecr.outputs.registry }}/mundilfari:${{ steps.sha.outputs.sha_short }}
+            ${{ steps.login-ecr.outputs.registry }}/mundilfari:latest
