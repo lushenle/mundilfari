@@ -43,6 +43,16 @@ jobs:
         run: |
           aws secretsmanager get-secret-value --secret-id mundilfari --query SecretString --output text | jq -r 'to_entries|map("\(.key)=\(.value)")|.[]' > app.env
 
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name mundilfari --region us-east-1
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: v1.25.6
+        id: install
+
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
@@ -53,3 +63,7 @@ jobs:
           tags: |
             ${{ steps.login-ecr.outputs.registry }}/mundilfari:${{ steps.sha.outputs.sha_short }}
             ${{ steps.login-ecr.outputs.registry }}/mundilfari:latest
+
+      - name: Deploy mundilfari to Amazon EKS
+        run: |
+          kubectl apply -f eks/deployment.yaml

@@ -17,6 +17,7 @@ spec:
     spec:
       containers:
         - name: mundilfari-api
-          image: 633338312642.dkr.ecr.us-east-1.amazonaws.com/mundilfari:ff08345
+          image: 633338312642.dkr.ecr.us-east-1.amazonaws.com/mundilfari:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
