@@ -13,6 +13,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: mundilfari-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
 spec:
   ingressClassName: nginx
   rules:
@@ -26,3 +28,7 @@ spec:
                   number: 80
             pathType: Prefix
             path: /
+  tls:
+    - hosts:
+        - mundilfari.shenle.lu
+      secretName: mundilfari-api-cert
