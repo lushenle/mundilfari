@@ -4,4 +4,5 @@ config.yaml
 bin/
 sync.sh
 .vscode
+eks/postgres.yaml
 
