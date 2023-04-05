@@ -4,13 +4,12 @@ import (
 	"context"
 	"database/sql"
 
-	"google.golang.org/protobuf/types/known/timestamppb"
-
 	db "github.com/lushenle/mundilfari/db/sqlc"
 	"github.com/lushenle/mundilfari/pb"
 	"github.com/lushenle/mundilfari/util"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (*pb.LoginUserResponse, error) {
