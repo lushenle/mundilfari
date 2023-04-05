@@ -1,5 +1,6 @@
 # Image URL to use all building/pushing image targets
 IMG ?= ishenle/mundilfari:latest
+DB_URL = postgresql://myuser:mypass@localhost:5432/mundilfari?sslmode=disable
 
 .PHONY: fmt
 fmt:
@@ -23,19 +24,19 @@ dropdb:
 
 .PHONY: migrateup
 migrateup:
-	migrate -path db/migration -database "postgresql://myuser:mypass@localhost:5432/mundilfari?sslmode=disable" -verbose up
+	migrate -path db/migration -database "$(DB_URL)" -verbose up
 
 .PHONY: migratedown
 migratedown:
-	migrate -path db/migration -database "postgresql://myuser:mypass@localhost:5432/mundilfari?sslmode=disable" -verbose down
+	migrate -path db/migration -database "$(DB_URL)" -verbose down
 
 .PHONY: migrateup1
 migrateup1:
-	migrate -path db/migration -database "postgresql://myuser:mypass@localhost:5432/mundilfari?sslmode=disable" -verbose up 1
+	migrate -path db/migration -database "$(DB_URL)" -verbose up 1
 
 .PHONY: migratedown1
 migratedown1:
-	migrate -path db/migration -database "postgresql://myuser:mypass@localhost:5432/mundilfari?sslmode=disable" -verbose down 1
+	migrate -path db/migration -database "$(DB_URL)" -verbose down 1
 
 .PHONY: sqlc
 sqlc:
@@ -62,3 +63,9 @@ docker-push:
 
 .PHONY: docker
 docker: docker-build docker-push
+
+.PHONY: db_docs
+	dbdocs build doc/db.dbml
+
+.PHONY: db_schema
+	dbml2sql --postgres -o doc/schema.sql doc/db.dbml
