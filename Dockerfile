@@ -5,7 +5,7 @@ FROM --platform=$BUILDPLATFORM golang:1.20 as builder
 WORKDIR /workspace
 
 # Install upx for compress binary file
-RUN apt update && apt install -y upx curl
+RUN apt update && apt install -y upx
 
 # Copy the go source
 COPY . .
@@ -25,17 +25,12 @@ ARG TARGETARCH
 RUN GOARCH=$TARGETARCH go build -a -installsuffix cgo -ldflags="-s -w" -o bin/server main.go \
     && upx bin/server
 
-# Add migrate tool
-#RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.2/migrate.linux-amd64.tar.gz | tar xvz
-RUN cd bin && wget -q -O - https://github.com/golang-migrate/migrate/releases/download/v4.15.2/migrate.linux-${TARGETARCH}.tar.gz | tar xz
-
 # build server
 FROM alpine:3.17.2
 WORKDIR /
 
 COPY --from=builder /workspace/bin .
 
-COPY db/migration /migration
 COPY app.env start.sh /
 
 ENV GIN_MODE=release
