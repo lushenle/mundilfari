@@ -6,3 +6,4 @@ sync.sh
 .vscode
 eks/postgres.yaml
 dbml-error.log
+conf/

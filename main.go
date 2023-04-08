@@ -9,8 +9,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/lushenle/mundilfari/mail"
-
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -20,6 +18,7 @@ import (
 	"github.com/lushenle/mundilfari/api"
 	db "github.com/lushenle/mundilfari/db/sqlc"
 	"github.com/lushenle/mundilfari/gapi"
+	"github.com/lushenle/mundilfari/mail"
 	"github.com/lushenle/mundilfari/pb"
 	"github.com/lushenle/mundilfari/util"
 	"github.com/lushenle/mundilfari/worker"
@@ -34,7 +33,7 @@ import (
 var content embed.FS
 
 func main() {
-	config, err := util.LoadConfig(".")
+	config, err := util.LoadConfig("./conf")
 	if err != nil {
 		log.Fatal().Msg("cannot load config")
 	}
