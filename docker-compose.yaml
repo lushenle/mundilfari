@@ -12,14 +12,20 @@ services:
       interval: 5s
       retries: 5
 
+  redis:
+    image: redis:7-alpine
+
   api:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    volumes:
+      - ${PWD}/conf:/conf:ro
     environment:
       - DB_SOURCE=postgresql://myuser:mypass@postgres:5432/mundilfari?sslmode=disable
+      - REDIS_ADDRESS=redis:6379
     depends_on:
       postgres:
         condition: service_healthy

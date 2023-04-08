@@ -31,7 +31,7 @@ WORKDIR /
 
 COPY --from=builder /workspace/bin .
 
-COPY app.env start.sh /
+COPY start.sh /
 COPY db/migration ./db/migration
 
 ENV GIN_MODE=release
