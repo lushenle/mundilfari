@@ -2,11 +2,12 @@ package worker
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
 	"fmt"
 
 	"github.com/hibiken/asynq"
+	db "github.com/lushenle/mundilfari/db/sqlc"
+	"github.com/lushenle/mundilfari/util"
 	"github.com/rs/zerolog/log"
 )
 
@@ -47,14 +48,32 @@ func (processor *RedisTaskProcessor) ProcessTaskSendVerifyEmail(ctx context.Cont
 
 	user, err := processor.store.GetUser(ctx, payload.Username)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return fmt.Errorf("user doesn't exist: %s", asynq.SkipRetry)
-		}
+		// if err == sql.ErrNoRows {
+		// 	return fmt.Errorf("user doesn't exist: %s", asynq.SkipRetry)
+		// }
 		return fmt.Errorf("failed to get user: %s", err)
 	}
 
-	// TODO: send email to user
+	verifyEmail, err := processor.store.CreateVerifyEmail(ctx, db.CreateVerifyEmailParams{
+		Username:   user.Username,
+		Email:      user.Email,
+		SecretCode: util.RandomString(32),
+	})
+	if err != nil {
+		return fmt.Errorf("failed to create verify email: %s", err)
+	}
 
+	subject := "Welcome to Mundilfari"
+	verifyUrl := fmt.Sprintf("http://mundilfari.shenle.lu/verify_eamil?id=%d&secret_code=%s", verifyEmail.ID, verifyEmail.SecretCode)
+	content := fmt.Sprintf(`Hello %s,<br/>
+	Thank you for registering with us!<br/>
+	Please <a href="%s">click here</a> to verify your email address.<br/>`, user.FullName, verifyUrl)
+	to := []string{user.Email}
+
+	err = processor.mailer.Sender(subject, content, to, nil, nil, nil)
+	if err != nil {
+		return fmt.Errorf("failed to send verify email: %s", err)
+	}
 	log.Info().Str("type", task.Type()).
 		Bytes("payload", task.Payload()).
 		Str("email", user.Email).
