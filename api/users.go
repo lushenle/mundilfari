@@ -5,9 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/google/uuid"
-
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/lib/pq"
 	db "github.com/lushenle/mundilfari/db/sqlc"
 	"github.com/lushenle/mundilfari/util"
@@ -130,8 +129,8 @@ func (server *Server) loginUser(ctx *gin.Context) {
 		RefreshToken: refreshToken,
 		UserAgent:    ctx.Request.UserAgent(),
 		ClientIp:     ctx.ClientIP(),
-		IsBlacked:    false,
-		ExpiresAt:    refreshPayload.ExpiredAt,
+		IsBlocked:    false,
+		ExpiredAt:    refreshPayload.ExpiredAt,
 	})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))

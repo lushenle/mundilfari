@@ -22,7 +22,7 @@ Table verify_emails {
   secret_code varchar [not null]
   is_used bool [not null, default: false]
   created_at timestamptz [not null, default: `now()`]
-  expires_at timestamptz [not null, default: `now() + interval '15 minutes'`]
+  expired_at timestamptz [not null, default: `now() + interval '15 minutes'`]
 }
 
 Table accounts as A {
@@ -70,6 +70,6 @@ Table sessions {
   user_agent varchar [not null]
   client_ip varchar [not null]
   is_blocked boolean [not null, default: false]
-  expires_at timestamptz [not null]
+  expired_at timestamptz [not null]
   created_at timestamptz [not null, default: `now()`]
 }

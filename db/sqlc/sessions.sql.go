@@ -19,11 +19,11 @@ INSERT INTO sessions (
     refresh_token,
     user_agent,
     client_ip,
-    is_blacked,
-    expires_at
+    is_blocked,
+    expired_at
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7
-) RETURNING id, username, refresh_token, user_agent, client_ip, is_blacked, expires_at, created_at
+) RETURNING id, username, refresh_token, user_agent, client_ip, is_blocked, expired_at, created_at
 `
 
 type CreateSessionParams struct {
@@ -32,8 +32,8 @@ type CreateSessionParams struct {
 	RefreshToken string    `json:"refresh_token"`
 	UserAgent    string    `json:"user_agent"`
 	ClientIp     string    `json:"client_ip"`
-	IsBlacked    bool      `json:"is_blacked"`
-	ExpiresAt    time.Time `json:"expires_at"`
+	IsBlocked    bool      `json:"is_blocked"`
+	ExpiredAt    time.Time `json:"expired_at"`
 }
 
 func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error) {
@@ -43,8 +43,8 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		arg.RefreshToken,
 		arg.UserAgent,
 		arg.ClientIp,
-		arg.IsBlacked,
-		arg.ExpiresAt,
+		arg.IsBlocked,
+		arg.ExpiredAt,
 	)
 	var i Session
 	err := row.Scan(
@@ -53,15 +53,15 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 		&i.RefreshToken,
 		&i.UserAgent,
 		&i.ClientIp,
-		&i.IsBlacked,
-		&i.ExpiresAt,
+		&i.IsBlocked,
+		&i.ExpiredAt,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getSession = `-- name: GetSession :one
-SELECT id, username, refresh_token, user_agent, client_ip, is_blacked, expires_at, created_at FROM sessions WHERE id = $1 LIMIT 1
+SELECT id, username, refresh_token, user_agent, client_ip, is_blocked, expired_at, created_at FROM sessions WHERE id = $1 LIMIT 1
 `
 
 func (q *Queries) GetSession(ctx context.Context, id uuid.UUID) (Session, error) {
@@ -73,8 +73,8 @@ func (q *Queries) GetSession(ctx context.Context, id uuid.UUID) (Session, error)
 		&i.RefreshToken,
 		&i.UserAgent,
 		&i.ClientIp,
-		&i.IsBlacked,
-		&i.ExpiresAt,
+		&i.IsBlocked,
+		&i.ExpiredAt,
 		&i.CreatedAt,
 	)
 	return i, err

@@ -32,8 +32,8 @@ type Session struct {
 	RefreshToken string    `json:"refresh_token"`
 	UserAgent    string    `json:"user_agent"`
 	ClientIp     string    `json:"client_ip"`
-	IsBlacked    bool      `json:"is_blacked"`
-	ExpiresAt    time.Time `json:"expires_at"`
+	IsBlocked    bool      `json:"is_blocked"`
+	ExpiredAt    time.Time `json:"expired_at"`
 	CreatedAt    time.Time `json:"created_at"`
 }
 
@@ -63,5 +63,5 @@ type VerifyEmail struct {
 	SecretCode string    `json:"secret_code"`
 	IsUsed     bool      `json:"is_used"`
 	CreatedAt  time.Time `json:"created_at"`
-	ExpiresAt  time.Time `json:"expires_at"`
+	ExpiredAt  time.Time `json:"expired_at"`
 }

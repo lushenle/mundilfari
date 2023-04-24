@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"google.golang.org/grpc/metadata"
-
 	"github.com/lushenle/mundilfari/token"
+	"google.golang.org/grpc/metadata"
 )
 
 const (

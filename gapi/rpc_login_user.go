@@ -50,8 +50,8 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 		RefreshToken: refreshToken,
 		UserAgent:    mtdt.UserAgent,
 		ClientIp:     mtdt.ClientIP,
-		IsBlacked:    false,
-		ExpiresAt:    refreshPayload.ExpiredAt,
+		IsBlocked:    false,
+		ExpiredAt:    refreshPayload.ExpiredAt,
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create session")

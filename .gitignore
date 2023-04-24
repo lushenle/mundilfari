@@ -7,3 +7,4 @@ sync.sh
 eks/postgres.yaml
 dbml-error.log
 conf/
+bootstrap/
