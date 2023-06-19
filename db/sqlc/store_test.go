@@ -7,8 +7,6 @@ import (
 )
 
 func TestStore_TransferTx(t *testing.T) {
-	store := NewStore(testDB)
-
 	account1 := createRandomAccount(t)
 	account2 := createRandomAccount(t)
 
@@ -21,7 +19,7 @@ func TestStore_TransferTx(t *testing.T) {
 
 	for i := 0; i < n; i++ {
 		go func() {
-			result, err := store.TransferTx(ctx, TransferTxParams{
+			result, err := testStore.TransferTx(ctx, TransferTxParams{
 				FromAccountID: account1.ID,
 				ToAccountID:   account2.ID,
 				Amount:        amount,
@@ -49,7 +47,7 @@ func TestStore_TransferTx(t *testing.T) {
 				require.NotZero(t, transfer.ID)
 				require.NotZero(t, transfer.CreatedAt)
 
-				_, err = store.GetTransfer(ctx, transfer.ID)
+				_, err = testStore.GetTransfer(ctx, transfer.ID)
 				require.NoError(t, err)
 
 				// check entries
@@ -60,7 +58,7 @@ func TestStore_TransferTx(t *testing.T) {
 				require.NotZero(t, fromEntry.ID)
 				require.NotZero(t, fromEntry.CreatedAt)
 
-				_, err = store.GetEntry(ctx, fromEntry.ID)
+				_, err = testStore.GetEntry(ctx, fromEntry.ID)
 				require.NoError(t, err)
 
 				toEntry := result.ToEntry
@@ -70,7 +68,7 @@ func TestStore_TransferTx(t *testing.T) {
 				require.NotZero(t, toEntry.ID)
 				require.NotZero(t, toEntry.CreatedAt)
 
-				_, err = store.GetEntry(ctx, toEntry.ID)
+				_, err = testStore.GetEntry(ctx, toEntry.ID)
 				require.NoError(t, err)
 
 				// check accounts
@@ -96,10 +94,10 @@ func TestStore_TransferTx(t *testing.T) {
 			}
 
 			// check the final updated balances
-			updateAccount1, err := testQueries.GetAccount(ctx, account1.ID)
+			updateAccount1, err := testStore.GetAccount(ctx, account1.ID)
 			require.NoError(t, err)
 
-			updateAccount2, err := testQueries.GetAccount(ctx, account2.ID)
+			updateAccount2, err := testStore.GetAccount(ctx, account2.ID)
 			require.NoError(t, err)
 
 			require.Equal(t, account1.Balance-int64(n)*amount, updateAccount1.Balance)
@@ -109,8 +107,6 @@ func TestStore_TransferTx(t *testing.T) {
 }
 
 func TestStore_TransferTxDeadlock(t *testing.T) {
-	store := NewStore(testDB)
-
 	account1 := createRandomAccount(t)
 	account2 := createRandomAccount(t)
 
@@ -128,7 +124,7 @@ func TestStore_TransferTxDeadlock(t *testing.T) {
 		}
 
 		go func() {
-			_, err := store.TransferTx(ctx, TransferTxParams{
+			_, err := testStore.TransferTx(ctx, TransferTxParams{
 				FromAccountID: fromAccountID,
 				ToAccountID:   toAccountID,
 				Amount:        amount,
@@ -143,10 +139,10 @@ func TestStore_TransferTxDeadlock(t *testing.T) {
 			}
 
 			// check the final updated balances
-			updateAccount1, err := testQueries.GetAccount(ctx, account1.ID)
+			updateAccount1, err := testStore.GetAccount(ctx, account1.ID)
 			require.NoError(t, err)
 
-			updateAccount2, err := testQueries.GetAccount(ctx, account2.ID)
+			updateAccount2, err := testStore.GetAccount(ctx, account2.ID)
 			require.NoError(t, err)
 
 			require.Equal(t, account1.Balance, updateAccount1.Balance)
