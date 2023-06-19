@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # Build the binary
-FROM --platform=$BUILDPLATFORM golang:1.20 as builder
+FROM --platform=$BUILDPLATFORM golang:bullseye as builder
 
 WORKDIR /workspace
 
